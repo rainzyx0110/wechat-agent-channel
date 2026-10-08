@@ -68,10 +68,10 @@ class WeComAIBotAdapter:
 
     def _default_connector(self, url: str) -> AsyncContextManager[Any]:
         try:
-            import websockets
+            from websockets.legacy import client as websockets_client
         except ImportError as exc:
             raise RuntimeError('install with: pip install "wechat-agent-channel[wecom-aibot]"') from exc
-        return websockets.connect(url, ping_interval=None)
+        return websockets_client.connect(url, ping_interval=None)
 
     async def handle_frame(self, raw: str | bytes | dict[str, Any]) -> None:
         frame = raw if isinstance(raw, dict) else json.loads(raw)
