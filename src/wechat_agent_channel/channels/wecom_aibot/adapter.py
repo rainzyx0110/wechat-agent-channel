@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import ssl
 import time
 import uuid
 from contextlib import suppress
@@ -24,6 +25,9 @@ class WeComAIBotAdapter:
         self._runner: asyncio.Task[Any] | None = None
         self._stopping = False
         self._send_lock = asyncio.Lock()
+        self._connected = False
+        self._authenticated = False
+        self._last_error: str | None = None
 
     def bind_dispatch(self, dispatch: Dispatch) -> None:
         self._dispatch = dispatch
@@ -31,6 +35,7 @@ class WeComAIBotAdapter:
     async def start(self) -> None:
         if self._runner is None or self._runner.done():
             self._stopping = False
+            self._last_error = None
             self._runner = asyncio.create_task(self.run_forever(), name=f"wecom-aibot-{self.config.account_id}")
 
     async def stop(self) -> None:
@@ -40,6 +45,18 @@ class WeComAIBotAdapter:
             with suppress(asyncio.CancelledError):
                 await self._runner
         self._runner = None
+        self._socket = None
+        self._connected = False
+        self._authenticated = False
+
+    async def status(self) -> dict[str, Any]:
+        return {
+            "configured": bool(self.config.bot_id and self.config.secret),
+            "running": bool(self._runner and not self._runner.done()),
+            "connected": self._connected,
+            "authenticated": self._authenticated,
+            "last_error": self._last_error,
+        }
 
     async def run_forever(self) -> None:
         if not self._dispatch:
@@ -49,7 +66,13 @@ class WeComAIBotAdapter:
                 connector = self._connector or self._default_connector
                 async with connector(self.config.ws_url) as socket:
                     self._socket = socket
-                    await self._send_frame("aibot_subscribe", {"bot_id": self.config.bot_id, "secret": self.config.secret})
+                    self._connected = True
+                    self._authenticated = False
+                    await self._send_frame(
+                        "aibot_subscribe",
+                        {"bot_id": self.config.bot_id, "secret": self.config.secret},
+                        req_id=f"aibot_subscribe_{uuid.uuid4().hex}",
+                    )
                     heartbeat = asyncio.create_task(self._heartbeat())
                     try:
                         async for raw in socket:
@@ -59,22 +82,42 @@ class WeComAIBotAdapter:
                         with suppress(asyncio.CancelledError):
                             await heartbeat
                         self._socket = None
+                        self._connected = False
+                        self._authenticated = False
             except asyncio.CancelledError:
                 raise
-            except Exception:
+            except Exception as exc:
                 self._socket = None
+                self._connected = False
+                self._authenticated = False
+                self._last_error = str(exc)
                 if not self._stopping:
                     await asyncio.sleep(self.config.reconnect_delay)
 
     def _default_connector(self, url: str) -> AsyncContextManager[Any]:
         try:
+            import certifi
             from websockets.legacy import client as websockets_client
         except ImportError as exc:
             raise RuntimeError('install with: pip install "wechat-agent-channel[wecom-aibot]"') from exc
-        return websockets_client.connect(url, ping_interval=None)
+        ssl_context = ssl.create_default_context(cafile=certifi.where())
+        return websockets_client.connect(url, ping_interval=None, ssl=ssl_context)
 
     async def handle_frame(self, raw: str | bytes | dict[str, Any]) -> None:
         frame = raw if isinstance(raw, dict) else json.loads(raw)
+        req_id = str((frame.get("headers") or {}).get("req_id") or "")
+        if not frame.get("cmd") and req_id.startswith("aibot_subscribe"):
+            if int(frame.get("errcode", -1)) == 0:
+                self._authenticated = True
+                self._last_error = None
+            else:
+                self._authenticated = False
+                self._last_error = f"认证失败：{frame.get('errmsg') or 'unknown error'} (errcode={frame.get('errcode')})"
+            return
+        if frame.get("cmd") == "aibot_event_callback" and ((frame.get("body") or {}).get("event") or {}).get("eventtype") == "disconnected_event":
+            self._authenticated = False
+            self._last_error = "连接被新的机器人实例顶下线"
+            return
         if frame.get("cmd") != "aibot_msg_callback":
             return
         message = self.normalize(frame.get("body") or {}, frame)
@@ -113,7 +156,8 @@ class WeComAIBotAdapter:
     async def _heartbeat(self) -> None:
         while True:
             await asyncio.sleep(self.config.heartbeat_interval)
-            await self._send_frame("ping", {})
+            if self._authenticated:
+                await self._send_frame("ping", {}, req_id=f"ping_{uuid.uuid4().hex}")
 
     async def _send_frame(self, cmd: str, body: dict[str, Any], *, req_id: str | None = None) -> None:
         if not self._socket:

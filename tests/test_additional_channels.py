@@ -76,6 +76,17 @@ async def test_wecom_callback_uses_request_id_for_reply():
 
 
 @pytest.mark.asyncio
+async def test_wecom_authentication_ack_updates_real_status():
+    adapter = WeComAIBotAdapter(WeComAIBotConfig("bot", "id", "secret"))
+    await adapter.handle_frame({"headers": {"req_id": "aibot_subscribe_1"}, "errcode": 0, "errmsg": "ok"})
+    assert (await adapter.status())["authenticated"] is True
+    await adapter.handle_frame({"headers": {"req_id": "aibot_subscribe_2"}, "errcode": 40001, "errmsg": "invalid secret"})
+    status = await adapter.status()
+    assert status["authenticated"] is False
+    assert "invalid secret" in status["last_error"]
+
+
+@pytest.mark.asyncio
 async def test_clawbot_qr_login_normalize_and_send():
     client = Client([
         {"qrcode": "qr1", "qrcode_img_content": "data"},
