@@ -1,0 +1,29 @@
+from __future__ import annotations
+
+from collections.abc import AsyncIterator
+from typing import Any, Protocol
+
+from .models import AgentMessage, AgentResponse, SendResult
+
+
+class AgentBridge(Protocol):
+    async def invoke(self, message: AgentMessage) -> AgentResponse: ...
+
+
+class ChannelAdapter(Protocol):
+    channel_type: str
+
+    async def start(self) -> None: ...
+    async def stop(self) -> None: ...
+    async def send(self, response: AgentResponse) -> SendResult: ...
+
+
+class ChannelStore(Protocol):
+    async def get(self, namespace: str, key: str) -> Any | None: ...
+    async def set(self, namespace: str, key: str, value: Any, ttl: int | None = None) -> None: ...
+    async def delete(self, namespace: str, key: str) -> None: ...
+    async def contains(self, namespace: str, key: str) -> bool: ...
+
+
+class StreamingAgentBridge(Protocol):
+    async def stream(self, message: AgentMessage) -> AsyncIterator[AgentResponse]: ...

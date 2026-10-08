@@ -1,0 +1,4 @@
+interface:
+  display_name: "WeChat Agent Channel"
+  short_description: "Integrate WeChat channels into an existing agent app"
+  default_prompt: "Integrate the requested WeChat channel into this project using its existing backend, agent entry point, frontend stack, and design system."

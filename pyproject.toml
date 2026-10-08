@@ -1,0 +1,43 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "wechat-agent-channel"
+version = "0.1.0"
+description = "Embeddable WeChat channel adapters for Python agent applications"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [{ name = "wechat-agent-channel contributors" }]
+dependencies = []
+
+[project.optional-dependencies]
+official-account = ["wechatpy>=1.8.18"]
+wechat-kf = ["httpx>=0.27", "wechatpy>=1.8.18", "xmltodict>=0.13"]
+wecom-aibot = ["websockets>=13"]
+clawbot = ["httpx>=0.27"]
+fastapi = ["fastapi>=0.115", "uvicorn>=0.30"]
+http = ["httpx>=0.27"]
+redis = ["redis>=5"]
+all = [
+  "wechatpy>=1.8.18",
+  "xmltodict>=0.13",
+  "httpx>=0.27",
+  "websockets>=13",
+  "fastapi>=0.115",
+  "uvicorn>=0.30",
+  "redis>=5",
+]
+dev = ["pytest>=8", "pytest-asyncio>=0.24", "httpx>=0.27", "fastapi>=0.115"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/wechat_agent_channel"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
