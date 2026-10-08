@@ -1,14 +1,20 @@
 # Dependency delivery modes
 
-Use version `0.1.0` for this Skill release. Select the narrow extras required by the requested channels plus `fastapi` when the host uses FastAPI.
+Use version `0.1.1` for this Skill release. Select the narrow extras required by the requested channels plus `fastapi` when the host uses FastAPI.
 
 ## Package mode (default)
 
 Use a trusted immutable source in this order:
 
 1. An explicit package spec supplied by the user or `WECHAT_AGENT_CHANNEL_PACKAGE_SPEC`.
-2. The channel repository's configured Git remote plus an existing immutable `v0.1.0` tag or full commit SHA.
-3. A package index explicitly configured by the host project or organization, pinned as `wechat-agent-channel[extras]==0.1.0`.
+2. The canonical public repository, pinned to this Skill release:
+
+   ```text
+   wechat-agent-channel[EXTRAS] @ git+https://github.com/rainzyx0110/wechat-agent-channel.git@v0.1.1
+   ```
+
+3. A newer trusted immutable tag or full commit SHA explicitly requested by the user.
+4. A package index explicitly configured by the host project or organization, pinned as `wechat-agent-channel[extras]==0.1.1`.
 
 Do not guess a GitHub organization, silently publish a repository, or install an unverified similarly named public package. A public GitHub repository is downloadable by everyone. Use a private repository and deployment credentials when the source must remain private.
 
