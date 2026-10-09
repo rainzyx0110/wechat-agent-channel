@@ -14,7 +14,7 @@ Use the host application's existing architecture and visual language. The packag
 3. Read [references/backend-integration.md](references/backend-integration.md). Read [references/frontend-integration.md](references/frontend-integration.md) only when a management UI is requested.
 4. Read [references/dependency-modes.md](references/dependency-modes.md). Default to `package` mode with a trusted, immutable version. If that source is unavailable, automatically fall back to `vendored` mode. Never leave a host project depending on an absolute path outside its repository.
 5. Implement either `CallableAgentBridge` for an in-process Agent or `HttpAgentBridge` for a remote Agent. Keep domain logic in the host Agent.
-6. Mount the management/callback router under the host's existing API namespace and authorization model. Public callback endpoints must not inherit interactive-login middleware; management endpoints must.
+6. Mount the management/callback router under the host's existing API namespace and access model. Reuse the same session and permissions as comparable host settings pages; do not introduce a separate channel administrator token or second login unless the user explicitly requests one. Public callback endpoints must not inherit interactive-login middleware.
 7. Store secrets using the host's secret facility. Never return plaintext secrets to the frontend or commit them to source control.
 8. Generate the management page from the channel manifest while reusing existing page shells, forms, buttons, feedback, spacing, and permission components.
 9. Verify normal input, invalid signature, duplicate delivery, Agent failure, channel API failure, and restart persistence. Use the callback simulator before configuring a public callback.

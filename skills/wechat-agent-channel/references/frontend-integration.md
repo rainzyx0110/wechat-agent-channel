@@ -12,6 +12,6 @@ The minimum page contains:
 - start/stop controls only for background-worker channels;
 - a QR-login surface only for channels declaring `qr_login`.
 
-Reuse the host project's layout, form system, modal or drawer conventions, API client, notifications, loading states, and permission checks. Do not introduce a new component library for this page.
+Reuse the host project's layout, form system, modal or drawer conventions, API client, notifications, loading states, and existing permission checks. Do not add a second login, a channel-only administrator key, or a new component library for this page. If the host has no authentication because it is a local demo, render the management page directly.
 
 Keep channel-specific fields data-driven. Channel-specific interaction panels, such as ClawBot QR login or WebSocket status, can be explicit components selected by channel type.

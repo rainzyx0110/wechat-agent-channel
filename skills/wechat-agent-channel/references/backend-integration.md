@@ -33,4 +33,4 @@ Callback URLs must be externally reachable when connected to real WeChat service
 - Deduplicate messages before invoking the Agent.
 - Redact AppSecret, Token, EncodingAESKey, access tokens, and bot tokens.
 - Keep callback routes public but cryptographically verified.
-- Protect management routes with the host application's administrator authorization.
+- Apply the host application's existing access policy to management routes. Reuse its current session, role, middleware, and API client behavior instead of creating a channel-only administrator token. If the host is an intentionally unauthenticated local demo, keep the management page directly usable and document that it must inherit access control before production exposure.
