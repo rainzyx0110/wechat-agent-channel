@@ -2,14 +2,14 @@
 
 面向 Python Agent 项目的可嵌入式微信渠道套件。它负责微信协议、消息标准化、状态和回复，不替代宿主项目的 Agent、业务逻辑和管理后台。
 
-当前版本包含四个可运行 Adapter：微信服务号/公众平台测试号、微信客服、企微智能机器人，以及实验性的微信 ClawBot。
+当前版本包含四个可运行 Adapter：微信服务号、微信客服、企微智能机器人，以及实验性的微信 ClawBot。
 
 ## 已实现
 
 - 统一 `AgentMessage` / `AgentResponse`
 - `CallableAgentBridge` 和 `HttpAgentBridge`
 - `MemoryStore`、`SQLiteStore`、`RedisStore`
-- 微信服务号/公众平台测试号明文/AES 回调、去重、AccessToken 缓存，以及账号有权限时的客服消息回复
+- 微信服务号明文/AES 回调、去重、AccessToken 缓存和客服消息回复
 - 微信客服 AES 回调、游标拉取、首次历史消息跳过和客服身份回复
 - 企微智能机器人 WebSocket 订阅、心跳、重连和流式协议回复
 - ClawBot/iLink 二维码登录、凭证持久化、长轮询和文本回复（实验性）
@@ -25,7 +25,7 @@
 ### 1. 在开发机器上准备仓库
 
 ```bash
-git clone --branch v0.1.7 https://github.com/rainzyx0110/wechat-agent-channel.git
+git clone --branch v0.1.8 https://github.com/rainzyx0110/wechat-agent-channel.git
 ```
 
 建议使用发布 Tag，避免不同机器在不同时间读取到不一致的 Skill 和渠道实现。业务项目不需要和本仓库放在同一目录。
@@ -43,7 +43,7 @@ git clone --branch v0.1.7 https://github.com/rainzyx0110/wechat-agent-channel.gi
 /absolute/path/to/my-business-agent
 
 需要接入：
-- 微信服务号或微信公众平台测试号
+- 微信服务号
 - 微信客服
 - 企微智能机器人
 - ClawBot
@@ -99,7 +99,7 @@ python3 -m venv .venv
 本项目当前通过 GitHub Tag 发布。业务项目只安装所需能力，并锁定版本：
 
 ```bash
-pip install 'wechat-agent-channel[official-account,fastapi] @ git+https://github.com/rainzyx0110/wechat-agent-channel.git@v0.1.7'
+pip install 'wechat-agent-channel[official-account,fastapi] @ git+https://github.com/rainzyx0110/wechat-agent-channel.git@v0.1.8'
 ```
 
 可选 extras：`official-account`、`wechat-kf`、`wecom-aibot`、`clawbot`、`fastapi`、`redis`。
