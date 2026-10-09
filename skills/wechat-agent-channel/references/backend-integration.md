@@ -8,7 +8,7 @@ Mount `create_channel_router(runtime, registry)` in the existing FastAPI applica
 
 ## Adapter selection
 
-- `OfficialAccountAdapter`: configure AppID, AppSecret, Token and optional EncodingAESKey; expose `/callbacks/official-account/{account_id}`.
+- `OfficialAccountAdapter`: for a 微信服务号 or 微信公众平台测试号, configure AppID, AppSecret, Token and optional EncodingAESKey; expose `/callbacks/official-account/{account_id}`. Receiving callbacks and sending customer-service replies depend on the interfaces granted to that account; do not claim that an unverified personal subscription account supports the full reply flow.
 - `WeChatKFAdapter`: configure CorpID, customer-service Secret, Token, EncodingAESKey and OpenKfId; expose `/callbacks/wechat-kf/{account_id}`.
 - `WeComAIBotAdapter`: configure Bot ID and Secret. It is a background WebSocket connection and needs no public callback URL.
 - `ClawBotAdapter`: configure a token or call the QR-login endpoints. Treat it as experimental and isolate failures from the host Agent.

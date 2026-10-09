@@ -2,8 +2,8 @@ from ...manifest import ChannelManifest, ConfigField
 
 manifest = ChannelManifest(
     type="official_account",
-    name="微信公众号",
-    description="接收服务号消息和事件，并通过客服消息接口回复。",
+    name="微信服务号 / 公众平台测试号",
+    description="接收服务号或测试号消息与事件，并在账号具备客服消息权限时回复。",
     stability="stable",
     transport="http_callback",
     capabilities=frozenset({"text", "image", "voice", "event", "active_reply"}),

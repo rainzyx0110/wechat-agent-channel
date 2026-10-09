@@ -1,6 +1,6 @@
 ---
 name: wechat-agent-channel
-description: Integrate one or more WeChat ecosystem channels into an existing Python agent application, including portable package or vendored delivery, backend routing, Agent bridging, channel configuration UI, callback setup, and local verification. Use when a project needs 微信公众号, 微信客服, 企微智能机器人, or experimental ClawBot connectivity through wechat-agent-channel.
+description: Integrate one or more WeChat ecosystem channels into an existing Python agent application, including portable package or vendored delivery, backend routing, Agent bridging, channel configuration UI, callback setup, and local verification. Use when a project needs 微信服务号/公众平台测试号, 微信客服, 企微智能机器人, or experimental ClawBot connectivity through wechat-agent-channel.
 ---
 
 # WeChat Agent Channel
@@ -23,7 +23,7 @@ Record the selected dependency mode, package version, and source revision in the
 
 ## Current support
 
-- `official_account`: callback verification/decryption, message normalization, deduplication, and customer-service replies.
+- `official_account`: 微信服务号/公众平台测试号 callback verification/decryption, message normalization, deduplication, and customer-service replies when the account has the required API permission. Keep this stable internal type name; do not present it as support for every subscription-account permission tier.
 - `wechat_kf`: encrypted callbacks, cursor-based message synchronization, and replies under an `open_kfid` identity.
 - `wecom_aibot`: WebSocket subscribe/heartbeat/reconnect, callback normalization, and stream-protocol replies.
 - `clawbot`: experimental iLink QR login, persisted credentials, long polling, and text replies.
