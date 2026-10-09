@@ -25,7 +25,7 @@
 ### 1. 在开发机器上准备仓库
 
 ```bash
-git clone --branch v0.1.5 https://github.com/rainzyx0110/wechat-agent-channel.git
+git clone --branch v0.1.6 https://github.com/rainzyx0110/wechat-agent-channel.git
 ```
 
 建议使用发布 Tag，避免不同机器在不同时间读取到不一致的 Skill 和渠道实现。业务项目不需要和本仓库放在同一目录。
@@ -99,7 +99,7 @@ python3 -m venv .venv
 本项目当前通过 GitHub Tag 发布。业务项目只安装所需能力，并锁定版本：
 
 ```bash
-pip install 'wechat-agent-channel[official-account,fastapi] @ git+https://github.com/rainzyx0110/wechat-agent-channel.git@v0.1.5'
+pip install 'wechat-agent-channel[official-account,fastapi] @ git+https://github.com/rainzyx0110/wechat-agent-channel.git@v0.1.6'
 ```
 
 可选 extras：`official-account`、`wechat-kf`、`wecom-aibot`、`clawbot`、`fastapi`、`redis`。

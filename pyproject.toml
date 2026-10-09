@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "wechat-agent-channel"
-version = "0.1.5"
+version = "0.1.6"
 description = "Embeddable WeChat channel adapters for Python agent applications"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -13,8 +13,8 @@ authors = [{ name = "wechat-agent-channel contributors" }]
 dependencies = []
 
 [project.optional-dependencies]
-official-account = ["wechatpy>=1.8.18"]
-wechat-kf = ["httpx>=0.27", "wechatpy>=1.8.18", "xmltodict>=0.13"]
+official-account = ["wechatpy>=1.8.18", "pycryptodome>=3.20"]
+wechat-kf = ["httpx>=0.27", "wechatpy>=1.8.18", "xmltodict>=0.13", "pycryptodome>=3.20"]
 wecom-aibot = ["websockets>=13,<16", "certifi>=2024.2.2"]
 clawbot = ["httpx>=0.27"]
 fastapi = ["fastapi>=0.115", "uvicorn>=0.30"]
@@ -22,6 +22,7 @@ http = ["httpx>=0.27"]
 redis = ["redis>=5"]
 all = [
   "wechatpy>=1.8.18",
+  "pycryptodome>=3.20",
   "xmltodict>=0.13",
   "httpx>=0.27",
   "websockets>=13,<16",
